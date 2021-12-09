@@ -9,4 +9,7 @@ services:
     environment:
       - OPENSEA_KEY=${OPENSEA_KEY}
       - OPENSEA_SLUG=${OPENSEA_SLUG}
+      - PORT=${PORT}
+      - NAME=${NAME}
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
     restart: always
