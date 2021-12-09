@@ -1,5 +1,6 @@
 import settings
 import requests
+import logging
 from typing import List, Dict
 
 class Opensea:
@@ -8,6 +9,7 @@ class Opensea:
 
     def __init__(self, api_key: str = None):
         self.api_key = api_key
+        self.logger = logging.getLogger('root')
         if self.api_key is not None:
             self.headers = {
                 "Accept": "application/json",
@@ -16,28 +18,10 @@ class Opensea:
         else:
             self.headers = {"Accept": "application/json"}
 
-    def get_offers(self, address: str, id_string: str, offset: int = 0) -> List[Dict]:
-        endpoint = "/orders"
-        url = (
-            f"{self.BASE_URL + endpoint}?asset_contract_address={address}"
-            "&bundled=false&include_bundled=false&include_invalid=false"
-            f"&{id_string}&limit=50&offset={offset}")
-        response = requests.request("GET", url, headers=self.headers)
-        return response.json()
-
-    def get_all_offers(self, id_string: str) -> List[Dict]:
-        offset = 0
-        offers = []
-        flag = True
-        while flag:
-            _offers = self.get_offers(settings.CONTRACT_ADDRESS, id_string, offset)
-            offers += _offers['orders']
-            if len(_offers['orders']) < self.OFFSET: flag = False
-            else: offset += self.OFFSET
-        return offers
-
-    def prepare_id_string(self, id_start, id_end) -> List[int]:
-        msg = ""
-        for _id in range(id_start, id_end):
-            msg += f"token_ids={_id}&"
-        return msg[:-1]
+    def get_floor(self, slug: str) -> int:
+        try:
+            response = requests.get(f"https://api.opensea.io/api/v1/collection/{slug}")
+            return int(response.json()['collection']['stats']['floor_price'] * 1e18)
+        except Exception as e:
+            self.logger.error(e)
+            raise Exception

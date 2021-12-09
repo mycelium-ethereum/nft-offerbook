@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  adapter:
+    build: .
+    image: gcr.io/tracer-external-adapters/opensea_nft
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
+    environment:
+      - OPENSEA_KEY=${OPENSEA_KEY}
+      - OPENSEA_SLUG=${OPENSEA_SLUG}
+    restart: always

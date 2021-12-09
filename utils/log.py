@@ -32,7 +32,7 @@ def setup_file_logger(name, logger):
         account (str): Strategy name
     """
     formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
-    file_handler = TimedRotatingFileHandler(f'logs/punk_offerbook_{name}.log', when='M', interval=30, backupCount=5)
+    file_handler = TimedRotatingFileHandler(f'logs/nft_{name}.log', when='M', interval=30, backupCount=5)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(settings.FILE_LOG_LEVEL)
     logger.addHandler(file_handler)
